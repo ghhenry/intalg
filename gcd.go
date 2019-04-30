@@ -84,16 +84,6 @@ func GCD(a, b uint64) uint64 {
 // If neg is true the sign is -d, otherwise +d.
 func EGCD(a, b uint64) (d uint64, u, v uint64, neg bool) {
 	var uc, vc uint64
-	div2 := func(a *uint64, u, v *uint64) {
-		*a >>= 1
-		if *u&1 == 1 || *v&1 == 1 {
-			*u = *u>>1 + uc
-			*v = *v>>1 + vc
-		} else {
-			*u >>= 1
-			*v >>= 1
-		}
-	}
 	u, v = 1, 0
 	var uo, vo uint64 = 0, 1
 	a0, b0 := a, b
@@ -113,10 +103,10 @@ func EGCD(a, b uint64) (d uint64, u, v uint64, neg bool) {
 	for a&1 == 0 && b&1 == 0 {
 		a >>= 1
 		b >>= 1
-		a0 >>= 1
-		b0 >>= 1
 		p2++
 	}
+	a0 >>= p2
+	b0 >>= p2
 	uc = b0>>1 + b0&1
 	vc = a0>>1 + a0&1
 	//check("setup", u, uo, v, vo, a0, b0, a, b, neg)
@@ -130,17 +120,26 @@ func EGCD(a, b uint64) (d uint64, u, v uint64, neg bool) {
 	if b == 0 {
 		return a << p2, u, v, neg
 	}
-	// deal with factors of 2
-	for a&1 == 0 {
-		div2(&a, &u, &v)
-		//check("a even", u, uo, v, vo, a0, b0, a, b, neg)
+	// at least one of a,b is odd here, make sure b is odd
+	if b&1 == 0 {
+		a, b = b, a
+		u, uo = uo, u
+		v, vo = vo, v
+		neg = !neg
 	}
-	for b&1 == 0 {
-		div2(&b, &uo, &vo)
-		//check("b even", u, uo, v, vo, a0, b0, a, b, neg)
-	}
-	// here a and b are both odd
 	for {
+		for a&1 == 0 {
+			a >>= 1
+			if u&1 == 1 || v&1 == 1 {
+				u = u>>1 + uc
+				v = v>>1 + vc
+			} else {
+				u >>= 1
+				v >>= 1
+			}
+			//check("a even", u, uo, v, vo, a0, b0, a, b, neg)
+		}
+		// a and b are both odd here
 		var t uint64
 		if a < b {
 			a, b = b, a
@@ -162,9 +161,5 @@ func EGCD(a, b uint64) (d uint64, u, v uint64, neg bool) {
 			v -= a0
 		}
 		//check("sub", u, uo, v, vo, a0, b0, a, b, neg)
-		for a&1 == 0 {
-			div2(&a, &u, &v)
-			//check("a even", u, uo, v, vo, a0, b0, a, b, neg)
-		}
 	}
 }
