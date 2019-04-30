@@ -102,6 +102,10 @@ func TestEGCD(t *testing.T) {
 			a: 18446744073709551615, b: 493884732703523455,
 			d: 33502085,
 		},
+		{
+			a: 4294967295, b: 42949,
+			d: 1,
+		},
 	}
 	for _, test := range tests {
 		d, u, v, neg := EGCD(test.a, test.b)

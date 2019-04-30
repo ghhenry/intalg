@@ -150,6 +150,11 @@ func EGCD(a, b uint64) (d uint64, u, v uint64, neg bool) {
 		}
 		t = a - b
 		if t == 0 {
+			if u > b0 {
+				q := u / b0
+				u -= q * b0
+				v -= q * a0
+			}
 			return a << p2, u, v, neg
 		}
 		a = t
