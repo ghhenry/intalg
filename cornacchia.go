@@ -19,7 +19,7 @@ func Sqrt64(n uint64) uint64 {
 	return x
 }
 
-// Cornacchia64 finds an integer solutions for x^2 + d*y^2 = p if one exists.
+// Cornacchia64 finds an integer solution for x^2 + d*y^2 = p if one exists.
 // p is a prime and 0 < d < p
 func Cornacchia64(d, p uint64) (x uint64, y uint64, ok bool) {
 	if p == 2 {
